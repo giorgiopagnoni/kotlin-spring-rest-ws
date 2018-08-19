@@ -16,7 +16,7 @@ data class UserEntity(
         @Column(nullable = false)
         var userId: String = "",
 
-        @Column(nullable = false, length = 100)
+        @Column(nullable = false, length = 100, unique = true)
         var email: String = "",
 
         @Column(nullable = false, length = 50)
