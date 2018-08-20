@@ -1,7 +1,8 @@
 package it.giorgiopagnoni.springrestws.service
 
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
+import org.springframework.security.core.userdetails.UserDetailsService
 
-interface UserService {
+interface UserService : UserDetailsService {
     fun createUser(userDto: UserDto): UserDto
 }

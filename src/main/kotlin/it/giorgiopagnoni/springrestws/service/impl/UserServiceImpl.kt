@@ -7,6 +7,8 @@ import it.giorgiopagnoni.springrestws.shared.Utils
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,6 +20,9 @@ class UserServiceImpl : UserService {
     @Autowired
     lateinit var utils: Utils
 
+    @Autowired
+    lateinit var bCryptPasswordEncoder: BCryptPasswordEncoder
+
     override fun createUser(userDto: UserDto): UserDto {
         if (userRepository.findByEmail(userDto.email) != null) {
             throw RuntimeException("Record already exists")
@@ -26,10 +31,7 @@ class UserServiceImpl : UserService {
         val userEntity = UserEntity()
         BeanUtils.copyProperties(userDto, userEntity)
         userEntity.userId = utils.generateUserId(30)
-
-        // tmp
-        userEntity.encryptedPassword = "ciaoo"
-        // end tmp
+        userEntity.encryptedPassword = bCryptPasswordEncoder.encode(userDto.password)
 
         val storedUser: UserEntity = userRepository.save(userEntity)
 
@@ -38,5 +40,9 @@ class UserServiceImpl : UserService {
 
         return returnValue
 
+    }
+
+    override fun loadUserByUsername(p0: String?): UserDetails {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
