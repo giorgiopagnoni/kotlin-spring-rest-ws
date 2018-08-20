@@ -16,9 +16,12 @@ class WebSecurity(
 
     override fun configure(http: HttpSecurity?) {
         http?.csrf()?.disable()?.authorizeRequests()
-                ?.antMatchers(HttpMethod.POST, "/users")
+                ?.antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
                 ?.permitAll()
-                ?.anyRequest()?.authenticated()
+                ?.anyRequest()
+                ?.authenticated()
+                ?.and()
+                ?.addFilter(AuthenticationFilter(authenticationManager()))
     }
 
     override fun configure(auth: AuthenticationManagerBuilder?) {

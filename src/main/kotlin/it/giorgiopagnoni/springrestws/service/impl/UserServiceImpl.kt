@@ -7,7 +7,9 @@ import it.giorgiopagnoni.springrestws.shared.Utils
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -22,6 +24,12 @@ class UserServiceImpl : UserService {
 
     @Autowired
     lateinit var bCryptPasswordEncoder: BCryptPasswordEncoder
+
+    override fun loadUserByUsername(email: String): UserDetails {
+        val userEntity = userRepository.findByEmail(email) ?: throw UsernameNotFoundException("$email not found")
+
+        return User(userEntity.email, userEntity.encryptedPassword, ArrayList())
+    }
 
     override fun createUser(userDto: UserDto): UserDto {
         if (userRepository.findByEmail(userDto.email) != null) {
@@ -40,9 +48,5 @@ class UserServiceImpl : UserService {
 
         return returnValue
 
-    }
-
-    override fun loadUserByUsername(p0: String?): UserDetails {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
