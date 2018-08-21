@@ -1,6 +1,6 @@
 package it.giorgiopagnoni.springrestws.service.impl
 
-import it.giorgiopagnoni.springrestws.UserRepository
+import it.giorgiopagnoni.springrestws.io.repositories.UserRepository
 import it.giorgiopagnoni.springrestws.io.entity.UserEntity
 import it.giorgiopagnoni.springrestws.service.UserService
 import it.giorgiopagnoni.springrestws.shared.Utils
@@ -29,6 +29,13 @@ class UserServiceImpl : UserService {
         val userEntity = userRepository.findByEmail(email) ?: throw UsernameNotFoundException("$email not found")
 
         return User(userEntity.email, userEntity.encryptedPassword, ArrayList())
+    }
+
+    override fun getUser(email: String): UserDto {
+        val userEntity = userRepository.findByEmail(email) ?: throw UsernameNotFoundException("$email not found")
+        val returnValue = UserDto()
+        BeanUtils.copyProperties(userEntity, returnValue)
+        return returnValue
     }
 
     override fun createUser(userDto: UserDto): UserDto {

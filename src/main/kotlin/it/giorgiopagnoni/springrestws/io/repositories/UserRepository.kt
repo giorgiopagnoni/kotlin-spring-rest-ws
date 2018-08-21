@@ -1,4 +1,4 @@
-package it.giorgiopagnoni.springrestws
+package it.giorgiopagnoni.springrestws.io.repositories
 
 import it.giorgiopagnoni.springrestws.io.entity.UserEntity
 import org.springframework.data.repository.CrudRepository

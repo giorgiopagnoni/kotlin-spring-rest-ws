@@ -3,6 +3,9 @@ package it.giorgiopagnoni.springrestws.security
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import it.giorgiopagnoni.springrestws.SpringApplicationContext
+import it.giorgiopagnoni.springrestws.service.UserService
+import it.giorgiopagnoni.springrestws.shared.dto.UserDto
 import it.giorgiopagnoni.springrestws.ui.request.UserLoginRequestModel
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -38,6 +41,10 @@ class AuthenticationFilter(
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET)
                 .compact()
 
+        val userService: UserService = SpringApplicationContext.getBean("userServiceImpl") as UserService
+        val userDto: UserDto = userService.getUser(userName)
+
         response?.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token)
+        response?.addHeader("UserID", userDto.userId)
     }
 }

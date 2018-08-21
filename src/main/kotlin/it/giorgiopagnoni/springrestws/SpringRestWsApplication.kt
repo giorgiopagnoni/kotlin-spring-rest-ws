@@ -9,6 +9,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 class SpringRestWsApplication {
     @Bean
     fun bCryptPasswordEncoder() = BCryptPasswordEncoder()
+
+    @Bean
+    fun springApplicationContext() = SpringApplicationContext()
 }
 
 fun main(args: Array<String>) {
