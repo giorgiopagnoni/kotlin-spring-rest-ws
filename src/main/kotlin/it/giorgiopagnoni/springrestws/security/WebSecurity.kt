@@ -21,11 +21,17 @@ class WebSecurity(
                 ?.anyRequest()
                 ?.authenticated()
                 ?.and()
-                ?.addFilter(AuthenticationFilter(authenticationManager()))
+                ?.addFilter(getAuthenticationFilter())
     }
 
     override fun configure(auth: AuthenticationManagerBuilder?) {
         auth?.userDetailsService(userDetailsService)
                 ?.passwordEncoder(bCryptPasswordEncoder)
+    }
+
+    fun getAuthenticationFilter(): AuthenticationFilter {
+        val filter = AuthenticationFilter(authenticationManager())
+        filter.setFilterProcessesUrl("/users/login")
+        return filter
     }
 }
