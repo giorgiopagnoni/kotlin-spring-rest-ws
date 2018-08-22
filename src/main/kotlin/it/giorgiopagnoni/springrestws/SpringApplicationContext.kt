@@ -13,5 +13,4 @@ class SpringApplicationContext: ApplicationContextAware {
         CONTEXT = applicationContext
     }
 
-
 }

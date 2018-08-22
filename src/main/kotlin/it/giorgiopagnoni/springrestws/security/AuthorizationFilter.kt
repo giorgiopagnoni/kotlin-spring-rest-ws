@@ -27,11 +27,11 @@ class AuthorizationFilter(
     }
 
     private fun getAuthentication(request: HttpServletRequest): UsernamePasswordAuthenticationToken? {
-        val token = request.getHeader(SecurityConstants.HEADER_STRING)
+        var token = request.getHeader(SecurityConstants.HEADER_STRING)
         if (token != null) {
-            token.replaceFirst(SecurityConstants.TOKEN_PREFIX, "")
+            token = token.replace(SecurityConstants.TOKEN_PREFIX, "")
             val user = Jwts.parser()
-                    .setSigningKey(SecurityConstants.TOKEN_SECRET)
+                    .setSigningKey(SecurityConstants.getTokenSecret())
                     .parseClaimsJws(token)
                     .body.subject
             if (user != null) {

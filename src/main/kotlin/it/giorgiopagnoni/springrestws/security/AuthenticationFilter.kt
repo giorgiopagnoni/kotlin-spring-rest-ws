@@ -38,7 +38,7 @@ class AuthenticationFilter(
         val token = Jwts.builder()
                 .setSubject(userName)
                 .setExpiration(Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET)
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret())
                 .compact()
 
         val userService: UserService = SpringApplicationContext.getBean("userServiceImpl") as UserService
