@@ -7,6 +7,7 @@ import it.giorgiopagnoni.springrestws.ui.response.UserRest
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import javax.persistence.Id
 
 @RestController
 @RequestMapping("/users")
@@ -15,8 +16,13 @@ class UserController {
     @Autowired
     lateinit var userService: UserService
 
-    @GetMapping()
-    fun getUser(): String = "hi"
+    @GetMapping(path = ["/{userId}"])
+    fun getUser(@PathVariable userId: String): UserRest {
+        val returnValue = UserRest()
+        val userDto = userService.getUserByUserId(userId)
+        BeanUtils.copyProperties(userDto, returnValue)
+        return returnValue
+    }
 
     @PostMapping
     fun createUser(@RequestBody userDetails: UserDetailsRequestModel): UserRest {

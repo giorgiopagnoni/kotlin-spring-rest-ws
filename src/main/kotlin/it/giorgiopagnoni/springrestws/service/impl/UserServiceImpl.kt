@@ -38,6 +38,13 @@ class UserServiceImpl : UserService {
         return returnValue
     }
 
+    override fun getUserByUserId(userId: String): UserDto {
+        val userEntity = userRepository.findByUserId(userId) ?: throw UsernameNotFoundException("$userId not found")
+        val returnValue = UserDto()
+        BeanUtils.copyProperties(userEntity, returnValue)
+        return returnValue
+    }
+
     override fun createUser(userDto: UserDto): UserDto {
         if (userRepository.findByEmail(userDto.email) != null) {
             throw RuntimeException("Record already exists")
