@@ -22,6 +22,7 @@ class WebSecurity(
                 ?.authenticated()
                 ?.and()
                 ?.addFilter(getAuthenticationFilter())
+                ?.addFilter(AuthorizationFilter(authenticationManager()))
     }
 
     override fun configure(auth: AuthenticationManagerBuilder?) {
