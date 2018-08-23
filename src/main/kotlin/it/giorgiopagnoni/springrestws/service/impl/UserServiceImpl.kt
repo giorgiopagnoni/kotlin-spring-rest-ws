@@ -28,20 +28,23 @@ class UserServiceImpl : UserService {
     lateinit var bCryptPasswordEncoder: BCryptPasswordEncoder
 
     override fun loadUserByUsername(email: String): UserDetails {
-        val userEntity = userRepository.findByEmail(email) ?: throw UsernameNotFoundException("$email not found")
+        val userEntity = userRepository.findByEmail(email)
+                ?: throw UsernameNotFoundException("$email not found")
 
         return User(userEntity.email, userEntity.encryptedPassword, ArrayList())
     }
 
     override fun getUser(email: String): UserDto {
-        val userEntity = userRepository.findByEmail(email) ?: throw UsernameNotFoundException("$email not found")
+        val userEntity = userRepository.findByEmail(email)
+                ?: throw UsernameNotFoundException("$email not found")
         val returnValue = UserDto()
         BeanUtils.copyProperties(userEntity, returnValue)
         return returnValue
     }
 
     override fun getUserByUserId(userId: String): UserDto {
-        val userEntity = userRepository.findByUserId(userId) ?: throw UsernameNotFoundException(userId)
+        val userEntity = userRepository.findByUserId(userId)
+                ?: throw UsernameNotFoundException(userId)
         val returnValue = UserDto()
         BeanUtils.copyProperties(userEntity, returnValue)
         return returnValue
@@ -49,7 +52,7 @@ class UserServiceImpl : UserService {
 
     override fun createUser(userDto: UserDto): UserDto {
         if (userRepository.findByEmail(userDto.email) != null) {
-            throw RuntimeException("Record already exists")
+            throw UserServiceException(ErrorMessages.RECORD_ALREADY_EXISTS.errorMessage)
         }
 
         val userEntity = UserEntity()
@@ -78,5 +81,11 @@ class UserServiceImpl : UserService {
         BeanUtils.copyProperties(updatedUser, returnValue)
 
         return returnValue
+    }
+
+    override fun deleteUser(userId: String) {
+        val userEntity = userRepository.findByUserId(userId)
+                ?: throw UserServiceException(ErrorMessages.NO_RECORD_FOUND.errorMessage)
+        userRepository.delete(userEntity)
     }
 }

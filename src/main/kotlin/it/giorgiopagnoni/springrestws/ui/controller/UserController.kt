@@ -1,11 +1,12 @@
 package it.giorgiopagnoni.springrestws.ui.controller
 
-import it.giorgiopagnoni.springrestws.exceptions.UserServiceException
 import it.giorgiopagnoni.springrestws.service.UserService
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
 import it.giorgiopagnoni.springrestws.ui.request.UserCreateRequestModel
 import it.giorgiopagnoni.springrestws.ui.request.UserUpdateRequestModel
-import it.giorgiopagnoni.springrestws.ui.response.ErrorMessages
+import it.giorgiopagnoni.springrestws.ui.response.OperationStatusModel
+import it.giorgiopagnoni.springrestws.ui.response.RequestOperationName
+import it.giorgiopagnoni.springrestws.ui.response.RequestOperationStatus
 import it.giorgiopagnoni.springrestws.ui.response.UserRest
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -67,6 +68,18 @@ class UserController {
         return returnValue
     }
 
-    @DeleteMapping
-    fun deleteUser(): String = "delete"
+    @DeleteMapping(
+            path = ["/{userId}"],
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+    )
+    fun deleteUser(@PathVariable userId: String): OperationStatusModel {
+        val returnValue = OperationStatusModel(
+                RequestOperationName.DELETE.name,
+                RequestOperationStatus.SUCCESS.name
+        )
+
+        userService.deleteUser(userId)
+
+        return returnValue
+    }
 }
