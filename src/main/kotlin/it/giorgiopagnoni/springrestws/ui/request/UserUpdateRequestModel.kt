@@ -1,6 +1,11 @@
 package it.giorgiopagnoni.springrestws.ui.request
 
+import javax.validation.constraints.NotBlank
+
 class UserUpdateRequestModel(
-        var firstName: String?,
-        var lastName: String?
+        @field:NotBlank
+        var firstName: String = "",
+
+        @field:NotBlank
+        var lastName: String = ""
 )

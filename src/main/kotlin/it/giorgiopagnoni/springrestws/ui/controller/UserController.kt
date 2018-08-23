@@ -3,7 +3,7 @@ package it.giorgiopagnoni.springrestws.ui.controller
 import it.giorgiopagnoni.springrestws.exceptions.UserServiceException
 import it.giorgiopagnoni.springrestws.service.UserService
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
-import it.giorgiopagnoni.springrestws.ui.request.UserDetailsRequestModel
+import it.giorgiopagnoni.springrestws.ui.request.UserCreateRequestModel
 import it.giorgiopagnoni.springrestws.ui.request.UserUpdateRequestModel
 import it.giorgiopagnoni.springrestws.ui.response.ErrorMessages
 import it.giorgiopagnoni.springrestws.ui.response.UserRest
@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/users")
@@ -34,11 +35,11 @@ class UserController {
             consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE],
             produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
     )
-    fun createUser(@RequestBody userDetails: UserDetailsRequestModel): UserRest {
+    fun createUser(@Valid @RequestBody userDetails: UserCreateRequestModel): UserRest {
         val returnValue = UserRest()
 
         // just an example
-        if (userDetails.firstName.isNullOrEmpty()) throw UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.errorMessage)
+        // if (userDetails.firstName.isNullOrEmpty()) throw UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.errorMessage)
 
         val userDto = UserDto()
         BeanUtils.copyProperties(userDetails, userDto)
@@ -54,7 +55,7 @@ class UserController {
             consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE],
             produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
     )
-    fun updateUser(@PathVariable userId: String, @RequestBody userDetails: UserUpdateRequestModel): UserRest {
+    fun updateUser(@PathVariable userId: String, @Valid @RequestBody userDetails: UserUpdateRequestModel): UserRest {
         val returnValue = UserRest()
 
         val userDto = UserDto()
