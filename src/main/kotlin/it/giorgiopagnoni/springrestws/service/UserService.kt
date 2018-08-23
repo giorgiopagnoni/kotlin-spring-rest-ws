@@ -9,4 +9,5 @@ interface UserService : UserDetailsService {
     fun createUser(userDto: UserDto): UserDto
     fun updateUser(userId: String, userDto: UserDto): UserDto
     fun deleteUser(userId: String)
+    fun getUsers(page: Int, limit: Int): List<UserDto>
 }

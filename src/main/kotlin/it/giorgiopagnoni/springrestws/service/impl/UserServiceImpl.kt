@@ -9,11 +9,15 @@ import it.giorgiopagnoni.springrestws.shared.dto.UserDto
 import it.giorgiopagnoni.springrestws.ui.response.ErrorMessages
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserServiceImpl : UserService {
@@ -83,9 +87,26 @@ class UserServiceImpl : UserService {
         return returnValue
     }
 
+    @Transactional
     override fun deleteUser(userId: String) {
         val userEntity = userRepository.findByUserId(userId)
                 ?: throw UserServiceException(ErrorMessages.NO_RECORD_FOUND.errorMessage)
         userRepository.delete(userEntity)
+    }
+
+    override fun getUsers(page: Int, limit: Int): List<UserDto> {
+        val realPage = if (page > 0) page - 1 else 0
+        val pageRequest: Pageable = PageRequest.of(realPage, limit)
+        val usersPage: Page<UserEntity> = userRepository.findAll(pageRequest)
+        val users: List<UserEntity> = usersPage.content
+
+        val returnValue = ArrayList<UserDto>()
+        for (userEntity in users) {
+            val userDto = UserDto()
+            BeanUtils.copyProperties(userEntity, userDto)
+            returnValue.add(userDto)
+        }
+
+        return returnValue
     }
 }

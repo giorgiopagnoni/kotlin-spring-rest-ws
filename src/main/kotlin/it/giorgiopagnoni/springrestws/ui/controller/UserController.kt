@@ -82,4 +82,22 @@ class UserController {
 
         return returnValue
     }
+
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE])
+    fun getUsers(
+            @RequestParam(value = "page", defaultValue = "1") page: Int,
+            @RequestParam(value = "limit", defaultValue = "25") limit: Int
+    ): List<UserRest> {
+
+        val users: List<UserDto> = userService.getUsers(page, limit)
+
+        val returnValue = ArrayList<UserRest>()
+        for (userDto in users) {
+            val userModel = UserRest()
+            BeanUtils.copyProperties(userDto, userModel)
+            returnValue.add(userModel)
+        }
+
+        return returnValue
+    }
 }
