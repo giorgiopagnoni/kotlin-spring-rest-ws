@@ -39,7 +39,7 @@ class UserServiceImpl : UserService {
     }
 
     override fun getUserByUserId(userId: String): UserDto {
-        val userEntity = userRepository.findByUserId(userId) ?: throw UsernameNotFoundException("$userId not found")
+        val userEntity = userRepository.findByUserId(userId) ?: throw UsernameNotFoundException(userId)
         val returnValue = UserDto()
         BeanUtils.copyProperties(userEntity, returnValue)
         return returnValue

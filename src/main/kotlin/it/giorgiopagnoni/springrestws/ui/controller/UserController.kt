@@ -6,6 +6,7 @@ import it.giorgiopagnoni.springrestws.ui.request.UserDetailsRequestModel
 import it.giorgiopagnoni.springrestws.ui.response.UserRest
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -15,7 +16,10 @@ class UserController {
     @Autowired
     lateinit var userService: UserService
 
-    @GetMapping(path = ["/{userId}"])
+    @GetMapping(
+            path = ["/{userId}"],
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+    )
     fun getUser(@PathVariable userId: String): UserRest {
         val returnValue = UserRest()
         val userDto = userService.getUserByUserId(userId)
@@ -23,7 +27,10 @@ class UserController {
         return returnValue
     }
 
-    @PostMapping
+    @PostMapping(
+            consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE],
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+    )
     fun createUser(@RequestBody userDetails: UserDetailsRequestModel): UserRest {
         val returnValue = UserRest()
 
