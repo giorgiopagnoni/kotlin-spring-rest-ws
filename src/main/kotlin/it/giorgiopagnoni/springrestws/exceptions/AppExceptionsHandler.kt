@@ -18,10 +18,10 @@ class AppExceptionsHandler {
         return ResponseEntity(errorMessage, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-    @ExceptionHandler(value = [Exception::class])
+    /*@ExceptionHandler(value = [Exception::class])
     fun handleOtherExceptions(ex: Exception, req: WebRequest): ResponseEntity<Any> {
         // do something useful here
         val errorMessage = ErrorMessage(ex.message?: "Opps")
         return ResponseEntity(errorMessage, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR)
-    }
+    }*/
 }

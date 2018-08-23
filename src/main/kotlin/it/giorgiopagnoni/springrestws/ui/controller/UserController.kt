@@ -4,6 +4,7 @@ import it.giorgiopagnoni.springrestws.exceptions.UserServiceException
 import it.giorgiopagnoni.springrestws.service.UserService
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
 import it.giorgiopagnoni.springrestws.ui.request.UserDetailsRequestModel
+import it.giorgiopagnoni.springrestws.ui.request.UserUpdateRequestModel
 import it.giorgiopagnoni.springrestws.ui.response.ErrorMessages
 import it.giorgiopagnoni.springrestws.ui.response.UserRest
 import org.springframework.beans.BeanUtils
@@ -48,8 +49,22 @@ class UserController {
         return returnValue
     }
 
-    @PutMapping
-    fun updateUser(): String = "update"
+    @PutMapping(
+            path = ["/{userId}"],
+            consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE],
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+    )
+    fun updateUser(@PathVariable userId: String, @RequestBody userDetails: UserUpdateRequestModel): UserRest {
+        val returnValue = UserRest()
+
+        val userDto = UserDto()
+        BeanUtils.copyProperties(userDetails, userDto)
+
+        val updateddUser = userService.updateUser(userId, userDto)
+        BeanUtils.copyProperties(updateddUser, returnValue)
+
+        return returnValue
+    }
 
     @DeleteMapping
     fun deleteUser(): String = "delete"

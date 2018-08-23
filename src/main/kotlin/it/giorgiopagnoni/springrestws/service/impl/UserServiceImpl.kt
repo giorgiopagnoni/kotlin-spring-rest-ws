@@ -1,10 +1,12 @@
 package it.giorgiopagnoni.springrestws.service.impl
 
+import it.giorgiopagnoni.springrestws.exceptions.UserServiceException
 import it.giorgiopagnoni.springrestws.io.repositories.UserRepository
 import it.giorgiopagnoni.springrestws.io.entity.UserEntity
 import it.giorgiopagnoni.springrestws.service.UserService
 import it.giorgiopagnoni.springrestws.shared.Utils
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
+import it.giorgiopagnoni.springrestws.ui.response.ErrorMessages
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.User
@@ -61,6 +63,20 @@ class UserServiceImpl : UserService {
         BeanUtils.copyProperties(storedUser, returnValue)
 
         return returnValue
+    }
 
+    override fun updateUser(userId: String, userDto: UserDto): UserDto {
+        val userEntity = userRepository.findByUserId(userId)
+                ?: throw UserServiceException(ErrorMessages.NO_RECORD_FOUND.errorMessage)
+
+        // we might not want to update email and password; it depends on the application
+        userEntity.firstName = userDto.firstName
+        userEntity.lastName = userDto.lastName
+
+        val updatedUser: UserEntity = userRepository.save(userEntity)
+        val returnValue = UserDto()
+        BeanUtils.copyProperties(updatedUser, returnValue)
+
+        return returnValue
     }
 }
