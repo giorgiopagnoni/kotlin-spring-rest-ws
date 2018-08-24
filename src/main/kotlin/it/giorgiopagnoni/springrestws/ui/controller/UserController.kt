@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
+import org.modelmapper.ModelMapper
+
+
 
 @RestController
 @RequestMapping("/users")
@@ -41,9 +44,11 @@ class UserController {
 
         // just an example
         // if (userDetails.firstName.isNullOrEmpty()) throw UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.errorMessage)
+        //val userDto = UserDto()
+        //BeanUtils.copyProperties(userDetails, userDto)
 
-        val userDto = UserDto()
-        BeanUtils.copyProperties(userDetails, userDto)
+        val modelMapper = ModelMapper()
+        val userDto = modelMapper.map<Any>(userDetails, UserDto::class.java) as UserDto
 
         val createdUser = userService.createUser(userDto)
         BeanUtils.copyProperties(createdUser, returnValue)

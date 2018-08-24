@@ -9,12 +9,12 @@ import org.springframework.context.annotation.Bean
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @SpringBootApplication
-class SpringRestWsApplication : SpringBootServletInitializer() {
+class SpringRestWsApplication {
 
     // to be run
-    override fun configure(builder: SpringApplicationBuilder): SpringApplicationBuilder {
-        return builder.sources(SpringRestWsApplication::class.java)
-    }
+    //override fun configure(builder: SpringApplicationBuilder): SpringApplicationBuilder {
+    //    return builder.sources(SpringRestWsApplication::class.java)
+    //}
 
     @Bean
     fun bCryptPasswordEncoder() = BCryptPasswordEncoder()

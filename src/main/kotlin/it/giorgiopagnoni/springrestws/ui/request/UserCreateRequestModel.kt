@@ -15,5 +15,7 @@ class UserCreateRequestModel(
         var firstName: String = "",
 
         @field:NotBlank
-        var lastName: String = ""
+        var lastName: String = "",
+
+        var addresses: List<AddressRequestModel>? = null
 )
