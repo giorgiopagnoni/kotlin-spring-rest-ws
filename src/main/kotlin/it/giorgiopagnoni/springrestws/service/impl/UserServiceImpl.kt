@@ -7,6 +7,7 @@ import it.giorgiopagnoni.springrestws.service.UserService
 import it.giorgiopagnoni.springrestws.shared.Utils
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
 import it.giorgiopagnoni.springrestws.ui.response.ErrorMessages
+import org.modelmapper.ModelMapper
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -54,31 +55,33 @@ class UserServiceImpl : UserService {
         return returnValue
     }
 
-    override fun createUser(userDto: UserDto): UserDto {
-        if (userRepository.findByEmail(userDto.email) != null) {
+    override fun createUser(user: UserDto): UserDto {
+        if (userRepository.findByEmail(user.email) != null) {
             throw UserServiceException(ErrorMessages.RECORD_ALREADY_EXISTS.errorMessage)
         }
 
-        val userEntity = UserEntity()
-        BeanUtils.copyProperties(userDto, userEntity)
+        for (addressDto in user.addresses) {
+            addressDto.userDetails = user
+            addressDto.addressId = utils.generateAddressId(29)
+        }
+
+        val modelMapper = ModelMapper()
+        val userEntity = modelMapper.map(user, UserEntity::class.java) as UserEntity
         userEntity.userId = utils.generateUserId(30)
-        userEntity.encryptedPassword = bCryptPasswordEncoder.encode(userDto.password)
+        userEntity.encryptedPassword = bCryptPasswordEncoder.encode(user.password)
 
         val storedUser: UserEntity = userRepository.save(userEntity)
 
-        val returnValue = UserDto()
-        BeanUtils.copyProperties(storedUser, returnValue)
-
-        return returnValue
+        return modelMapper.map(storedUser, UserDto::class.java) as UserDto
     }
 
-    override fun updateUser(userId: String, userDto: UserDto): UserDto {
+    override fun updateUser(userId: String, user: UserDto): UserDto {
         val userEntity = userRepository.findByUserId(userId)
                 ?: throw UserServiceException(ErrorMessages.NO_RECORD_FOUND.errorMessage)
 
         // we might not want to update email and password; it depends on the application
-        userEntity.firstName = userDto.firstName
-        userEntity.lastName = userDto.lastName
+        userEntity.firstName = user.firstName
+        userEntity.lastName = user.lastName
 
         val updatedUser: UserEntity = userRepository.save(userEntity)
         val returnValue = UserDto()

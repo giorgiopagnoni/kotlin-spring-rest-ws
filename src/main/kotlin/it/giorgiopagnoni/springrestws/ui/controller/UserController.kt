@@ -40,20 +40,16 @@ class UserController {
             produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
     )
     fun createUser(@Valid @RequestBody userDetails: UserCreateRequestModel): UserRest {
-        val returnValue = UserRest()
 
         // just an example
         // if (userDetails.firstName.isNullOrEmpty()) throw UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.errorMessage)
-        //val userDto = UserDto()
-        //BeanUtils.copyProperties(userDetails, userDto)
 
         val modelMapper = ModelMapper()
-        val userDto = modelMapper.map<Any>(userDetails, UserDto::class.java) as UserDto
+        val userDto = modelMapper.map(userDetails, UserDto::class.java) as UserDto
 
         val createdUser = userService.createUser(userDto)
-        BeanUtils.copyProperties(createdUser, returnValue)
 
-        return returnValue
+        return modelMapper.map(createdUser, UserRest::class.java) as UserRest
     }
 
     @PutMapping(

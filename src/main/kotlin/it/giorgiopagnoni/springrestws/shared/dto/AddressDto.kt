@@ -5,7 +5,7 @@ import java.io.Serializable
 data class AddressDto(
         var id: Long = 0,
         var addressId: String = "",
-        var userDto: UserDto = UserDto(),
+        var userDetails: UserDto = UserDto(),
 
         var city: String = "",
         var country: String = "",

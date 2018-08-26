@@ -1,20 +1,19 @@
 package it.giorgiopagnoni.springrestws.io.entity
 
 import java.io.Serializable
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity(name = "users")
 data class UserEntity(
 
-        @Id
-        @GeneratedValue
+        @Id @GeneratedValue
         var id: Long? = null,
 
         @Column(nullable = false)
         var userId: String = "",
+
+        @OneToMany(mappedBy = "userDetails", cascade = [CascadeType.ALL])
+        var addresses: List<AddressEntity> = ArrayList(),
 
         @Column(nullable = false, length = 100, unique = true)
         var email: String = "",

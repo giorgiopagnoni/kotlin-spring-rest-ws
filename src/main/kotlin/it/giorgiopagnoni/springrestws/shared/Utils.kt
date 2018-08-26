@@ -12,6 +12,8 @@ class Utils {
 
     fun generateUserId(length: Int): String = generateRandomString(length)
 
+    fun generateAddressId(length: Int): String = generateRandomString(length)
+
     private fun generateRandomString(length: Int): String {
         val returnValue = StringBuilder(length)
         for (i in 0..length) {
