@@ -13,7 +13,7 @@ data class UserEntity(
         var userId: String = "",
 
         @OneToMany(mappedBy = "userDetails", cascade = [CascadeType.ALL])
-        var addresses: List<AddressEntity> = ArrayList(),
+        var addresses: List<AddressEntity>? = ArrayList(),
 
         @Column(nullable = false, length = 100, unique = true)
         var email: String = "",

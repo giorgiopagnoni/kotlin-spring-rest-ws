@@ -60,7 +60,7 @@ class UserServiceImpl : UserService {
             throw UserServiceException(ErrorMessages.RECORD_ALREADY_EXISTS.errorMessage)
         }
 
-        for (addressDto in user.addresses) {
+        for (addressDto in user.addresses.orEmpty()) {
             addressDto.userDetails = user
             addressDto.addressId = utils.generateAddressId(29)
         }
