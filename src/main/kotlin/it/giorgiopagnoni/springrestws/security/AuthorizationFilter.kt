@@ -21,7 +21,7 @@ class AuthorizationFilter(
         }
 
         val authentication: UsernamePasswordAuthenticationToken? = getAuthentication(request)
-        SecurityContextHolder.getContext().setAuthentication(authentication)
+        SecurityContextHolder.getContext().authentication = authentication
         chain.doFilter(request, response)
 
     }
