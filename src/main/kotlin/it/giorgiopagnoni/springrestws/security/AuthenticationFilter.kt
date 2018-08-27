@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse
 
 class AuthenticationFilter(
         var authManager: AuthenticationManager
-): UsernamePasswordAuthenticationFilter() {
+) : UsernamePasswordAuthenticationFilter() {
 
     override fun attemptAuthentication(request: HttpServletRequest?, response: HttpServletResponse?): Authentication {
         val creds: UserLoginRequestModel = ObjectMapper()
@@ -33,7 +33,8 @@ class AuthenticationFilter(
         )
     }
 
-    override fun successfulAuthentication(request: HttpServletRequest?, response: HttpServletResponse?, chain: FilterChain?, authResult: Authentication?) {
+    override fun successfulAuthentication(request: HttpServletRequest?, response: HttpServletResponse?,
+                                          chain: FilterChain?, authResult: Authentication?) {
         val userName = (authResult?.principal as User).username
         val token = Jwts.builder()
                 .setSubject(userName)
@@ -41,7 +42,8 @@ class AuthenticationFilter(
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret())
                 .compact()
 
-        val userService: UserService = SpringApplicationContext.getBean("userServiceImpl") as UserService
+        val userService = SpringApplicationContext.getBean("userServiceImpl")
+                as UserService
         val userDto: UserDto = userService.getUser(userName)
 
         response?.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token)

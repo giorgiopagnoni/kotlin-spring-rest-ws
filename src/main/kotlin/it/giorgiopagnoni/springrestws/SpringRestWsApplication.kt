@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 @SpringBootApplication
 class SpringRestWsApplication {
 
-    // to be run
     //override fun configure(builder: SpringApplicationBuilder): SpringApplicationBuilder {
     //    return builder.sources(SpringRestWsApplication::class.java)
     //}
