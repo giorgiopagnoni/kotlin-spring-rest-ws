@@ -1,6 +1,5 @@
 package it.giorgiopagnoni.springrestws.io.entity
 
-import it.giorgiopagnoni.springrestws.shared.dto.UserDto
 import java.io.Serializable
 import javax.persistence.*
 

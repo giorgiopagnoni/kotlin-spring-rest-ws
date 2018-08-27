@@ -1,20 +1,19 @@
 package it.giorgiopagnoni.springrestws.ui.controller
 
+import it.giorgiopagnoni.springrestws.service.AddressService
 import it.giorgiopagnoni.springrestws.service.UserService
+import it.giorgiopagnoni.springrestws.shared.dto.AddressDto
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
 import it.giorgiopagnoni.springrestws.ui.request.UserCreateRequestModel
 import it.giorgiopagnoni.springrestws.ui.request.UserUpdateRequestModel
-import it.giorgiopagnoni.springrestws.ui.response.OperationStatusModel
-import it.giorgiopagnoni.springrestws.ui.response.RequestOperationName
-import it.giorgiopagnoni.springrestws.ui.response.RequestOperationStatus
-import it.giorgiopagnoni.springrestws.ui.response.UserRest
+import it.giorgiopagnoni.springrestws.ui.response.*
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 import org.modelmapper.ModelMapper
-
+import org.modelmapper.TypeToken
 
 
 @RestController
@@ -23,6 +22,9 @@ class UserController {
 
     @Autowired
     lateinit var userService: UserService
+
+    @Autowired
+    lateinit var addressService: AddressService
 
     @GetMapping(
             path = ["/{userId}"],
@@ -100,5 +102,16 @@ class UserController {
         }
 
         return returnValue
+    }
+
+    @GetMapping(
+            path = ["/{userId}/addresses"],
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+    )
+    fun getUserAddresses(@PathVariable userId: String): List<AddressRest> {
+        val addressesDto: List<AddressDto> = addressService.getAddressesByUserId(userId)
+        val listType: java.lang.reflect.Type = object : TypeToken<List<AddressRest>>() {}.type
+
+        return ModelMapper().map(addressesDto, listType)
     }
 }
