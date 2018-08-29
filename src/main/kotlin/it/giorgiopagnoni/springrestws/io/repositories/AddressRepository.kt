@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface AddressRepository : CrudRepository<AddressEntity, Long> {
     fun findAllByUserDetails(user: UserEntity): List<AddressEntity>
+    fun findByAddressId(addressId: String): AddressEntity?
 }

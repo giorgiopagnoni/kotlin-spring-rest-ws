@@ -1,6 +1,6 @@
 package it.giorgiopagnoni.springrestws.ui.request
 
-data class UserLoginRequestModel(
+class UserLoginRequestModel(
         var email: String = "",
         var password: String = ""
 )

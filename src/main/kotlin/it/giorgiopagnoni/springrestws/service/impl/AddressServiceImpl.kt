@@ -5,6 +5,7 @@ import it.giorgiopagnoni.springrestws.io.repositories.AddressRepository
 import it.giorgiopagnoni.springrestws.io.repositories.UserRepository
 import it.giorgiopagnoni.springrestws.service.AddressService
 import it.giorgiopagnoni.springrestws.shared.dto.AddressDto
+import it.giorgiopagnoni.springrestws.ui.response.ErrorMessages
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -32,5 +33,11 @@ class AddressServiceImpl : AddressService {
         }
 
         return returnValue
+    }
+
+    override fun getAddressByAddressId(addressId: String): AddressDto {
+        val addressEntity = addressRepository.findByAddressId(addressId)
+                ?: throw Exception(ErrorMessages.NO_RECORD_FOUND.errorMessage)
+        return ModelMapper().map(addressEntity, AddressDto::class.java)
     }
 }

@@ -114,4 +114,14 @@ class UserController {
 
         return ModelMapper().map(addressesDto, listType)
     }
+
+    @GetMapping(
+            path = ["/{userId}/addresses/{addressId}"],
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+    )
+    fun getUserAddress(@PathVariable addressId: String): AddressRest {
+        val addressDto = addressService.getAddressByAddressId(addressId)
+
+        return ModelMapper().map(addressDto, AddressRest::class.java)
+    }
 }
