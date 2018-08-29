@@ -12,7 +12,7 @@ data class UserDto(
         var firstName: String = "",
         var lastName: String = "",
         var encryptedPassword: String = "",
-        var emailVerificationToken: String = "",
+        var emailVerificationToken: String? = "",
         var emailVerificationStatus: Boolean = false
 ) : Serializable {
     companion object {

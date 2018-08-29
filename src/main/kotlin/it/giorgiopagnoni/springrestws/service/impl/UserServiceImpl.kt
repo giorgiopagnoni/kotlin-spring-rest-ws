@@ -3,6 +3,7 @@ package it.giorgiopagnoni.springrestws.service.impl
 import it.giorgiopagnoni.springrestws.exceptions.UserServiceException
 import it.giorgiopagnoni.springrestws.io.repositories.UserRepository
 import it.giorgiopagnoni.springrestws.io.entity.UserEntity
+import it.giorgiopagnoni.springrestws.service.UserMailer
 import it.giorgiopagnoni.springrestws.service.UserService
 import it.giorgiopagnoni.springrestws.shared.Utils
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
@@ -28,6 +29,9 @@ class UserServiceImpl : UserService {
 
     @Autowired
     lateinit var utils: Utils
+
+    @Autowired
+    lateinit var userMailer: UserMailer
 
     @Autowired
     lateinit var bCryptPasswordEncoder: BCryptPasswordEncoder
@@ -76,7 +80,10 @@ class UserServiceImpl : UserService {
 
         val storedUser: UserEntity = userRepository.save(userEntity)
 
-        return modelMapper.map(storedUser, UserDto::class.java) as UserDto
+        val userDto = modelMapper.map(storedUser, UserDto::class.java) as UserDto
+        userMailer.sendActivationEmail(userDto)
+
+        return userDto
     }
 
     override fun updateUser(userId: String, user: UserDto): UserDto {
