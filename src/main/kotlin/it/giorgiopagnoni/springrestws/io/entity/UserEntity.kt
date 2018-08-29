@@ -28,7 +28,7 @@ data class UserEntity(
         @Column(nullable = false)
         var encryptedPassword: String = "",
 
-        var emailVerificationToken: String = "",
+        var emailVerificationToken: String? = null,
 
         @Column(nullable = false, columnDefinition = "boolean default false")
         var emailVerificationStatus: Boolean = false

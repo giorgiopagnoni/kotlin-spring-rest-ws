@@ -144,4 +144,20 @@ class UserController {
 
         return Resource(addressesRestModel)
     }
+
+    @GetMapping(
+            path = ["/email-verification"],
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+    )
+    fun verifyEmailToken(@RequestParam(value = "token") token: String): OperationStatusModel {
+        val returnValue = OperationStatusModel(RequestOperationName.VERIFY_EMAIL.name)
+
+        returnValue.operationResult = if (userService.verifyEmailToken(token)) {
+            RequestOperationStatus.SUCCESS.name
+        } else {
+            RequestOperationStatus.ERROR.name
+        }
+
+        return returnValue
+    }
 }

@@ -1,7 +1,7 @@
 package it.giorgiopagnoni.springrestws.ui.response
 
 enum class RequestOperationName {
-    DELETE
+    DELETE, VERIFY_EMAIL
 }
 
 enum class RequestOperationStatus {

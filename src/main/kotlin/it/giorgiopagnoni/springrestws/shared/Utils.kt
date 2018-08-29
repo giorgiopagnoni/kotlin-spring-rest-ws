@@ -1,7 +1,11 @@
 package it.giorgiopagnoni.springrestws.shared
 
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
+import it.giorgiopagnoni.springrestws.security.SecurityConstants
 import org.springframework.stereotype.Component
 import java.security.SecureRandom
+import java.util.*
 
 @Component
 class Utils {
@@ -20,5 +24,24 @@ class Utils {
             returnValue.append(alphabet[random.nextInt(alphabet.length)])
         }
         return returnValue.toString()
+    }
+
+    fun generateEmailVerificationToken(userId: String): String {
+        return Jwts.builder()
+                .setSubject(userId)
+                .setExpiration(Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret())
+                .compact()
+    }
+
+    fun hasTokenExpired(token: String): Boolean {
+        val claims = Jwts.parser()
+                .setSigningKey(SecurityConstants.getTokenSecret())
+                .parseClaimsJws(token).body
+
+        val tokenExpirationDate = claims.expiration
+        val todayDate = Date()
+
+        return tokenExpirationDate.before(todayDate)
     }
 }

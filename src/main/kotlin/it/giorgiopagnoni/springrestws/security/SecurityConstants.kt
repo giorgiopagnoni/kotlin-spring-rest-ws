@@ -7,6 +7,7 @@ object SecurityConstants {
     const val TOKEN_PREFIX = "Bearer "
     const val HEADER_STRING = "Authorization"
     const val SIGN_UP_URL = "/users"
+    const val EMAIL_VERIFICATION_URL = "/users/email-verification"
 
     fun getTokenSecret(): String? {
         val appProperties = SpringApplicationContext.getBean("appProperties") as AppProperties

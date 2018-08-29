@@ -10,4 +10,5 @@ interface UserService : UserDetailsService {
     fun updateUser(userId: String, user: UserDto): UserDto
     fun deleteUser(userId: String)
     fun getUsers(page: Int, limit: Int): List<UserDto>
+    fun verifyEmailToken(token: String): Boolean
 }

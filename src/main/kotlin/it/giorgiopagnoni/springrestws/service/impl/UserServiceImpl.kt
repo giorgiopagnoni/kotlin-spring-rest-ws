@@ -36,7 +36,9 @@ class UserServiceImpl : UserService {
         val userEntity = userRepository.findByEmail(email)
                 ?: throw UsernameNotFoundException("$email not found")
 
-        return User(userEntity.email, userEntity.encryptedPassword, ArrayList())
+        return User(userEntity.email, userEntity.encryptedPassword, userEntity.emailVerificationStatus,
+                true, true, true, ArrayList())
+        //return User(userEntity.email, userEntity.encryptedPassword, ArrayList())
     }
 
     override fun getUser(email: String): UserDto {
@@ -69,6 +71,8 @@ class UserServiceImpl : UserService {
         val userEntity = modelMapper.map(user, UserEntity::class.java) as UserEntity
         userEntity.userId = utils.generateUserId(30)
         userEntity.encryptedPassword = bCryptPasswordEncoder.encode(user.password)
+        userEntity.emailVerificationToken = utils.generateEmailVerificationToken(userEntity.userId)
+        userEntity.emailVerificationStatus = false
 
         val storedUser: UserEntity = userRepository.save(userEntity)
 
@@ -90,13 +94,6 @@ class UserServiceImpl : UserService {
         return returnValue
     }
 
-    @Transactional
-    override fun deleteUser(userId: String) {
-        val userEntity = userRepository.findByUserId(userId)
-                ?: throw UserServiceException(ErrorMessages.NO_RECORD_FOUND.errorMessage)
-        userRepository.delete(userEntity)
-    }
-
     override fun getUsers(page: Int, limit: Int): List<UserDto> {
         val realPage = if (page > 0) page - 1 else 0
         val pageRequest: Pageable = PageRequest.of(realPage, limit)
@@ -111,5 +108,24 @@ class UserServiceImpl : UserService {
         }
 
         return returnValue
+    }
+
+    @Transactional
+    override fun deleteUser(userId: String) {
+        val userEntity = userRepository.findByUserId(userId)
+                ?: throw UserServiceException(ErrorMessages.NO_RECORD_FOUND.errorMessage)
+        userRepository.delete(userEntity)
+    }
+
+    override fun verifyEmailToken(token: String): Boolean {
+        val userEntity = userRepository.findByEmailVerificationToken(token)
+                ?: throw UserServiceException(ErrorMessages.NO_RECORD_FOUND.errorMessage)
+
+        if (utils.hasTokenExpired(token)) return false
+
+        userEntity.emailVerificationToken = null
+        userEntity.emailVerificationStatus = true
+        userRepository.save(userEntity)
+        return true
     }
 }

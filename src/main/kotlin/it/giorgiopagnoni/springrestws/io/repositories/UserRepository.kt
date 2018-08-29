@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 interface UserRepository : PagingAndSortingRepository<UserEntity, Long> {
     fun findByEmail(email: String): UserEntity?
     fun findByUserId(userId: String): UserEntity?
+    fun findByEmailVerificationToken(token: String): UserEntity?
 }
