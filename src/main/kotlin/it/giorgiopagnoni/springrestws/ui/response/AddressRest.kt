@@ -1,6 +1,9 @@
 package it.giorgiopagnoni.springrestws.ui.response
 
-class AddressRest(
+import org.springframework.hateoas.ResourceSupport
+
+// oper because of methodOn for HATEOAS
+open class AddressRest(
         var addressId: String = "",
 
         var city: String = "",
@@ -8,4 +11,4 @@ class AddressRest(
         var streetName: String = "",
         var postalCode: String = "",
         var type: String = ""
-)
+) : ResourceSupport()

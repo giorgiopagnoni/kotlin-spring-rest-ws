@@ -1,5 +1,6 @@
 package it.giorgiopagnoni.springrestws.io.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.io.Serializable
 import javax.persistence.*
 
@@ -12,6 +13,7 @@ data class AddressEntity(
         var addressId: String = "",
 
         @ManyToOne @JoinColumn(name="users_id")
+        @JsonIgnore
         var userDetails: UserEntity = UserEntity(),
 
         @Column(length = 20, nullable = false)

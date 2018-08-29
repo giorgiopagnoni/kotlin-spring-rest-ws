@@ -1,6 +1,6 @@
 package it.giorgiopagnoni.springrestws.ui.response
 
-class UserRest(
+open class UserRest(
         var userId: String = "",
         var email: String = "",
         var firstName: String = "",

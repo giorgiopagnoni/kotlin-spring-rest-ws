@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 import org.modelmapper.ModelMapper
 import org.modelmapper.TypeToken
-
+import org.springframework.hateoas.Resource
+import org.springframework.hateoas.Resources
+import org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo
+import org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn
 
 @RestController
 @RequestMapping("/users")
@@ -106,22 +109,39 @@ class UserController {
 
     @GetMapping(
             path = ["/{userId}/addresses"],
-            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, "application/hal+json"]
     )
-    fun getUserAddresses(@PathVariable userId: String): List<AddressRest> {
+    fun getUserAddresses(@PathVariable userId: String): Resources<AddressRest> {
         val addressesDto: List<AddressDto> = addressService.getAddressesByUserId(userId)
         val listType: java.lang.reflect.Type = object : TypeToken<List<AddressRest>>() {}.type
 
-        return ModelMapper().map(addressesDto, listType)
+        val returnValue: List<AddressRest> = ModelMapper().map(addressesDto, listType)
+        for (address in returnValue) {
+            val addressLink = linkTo(methodOn(UserController::class.java).getUserAddress(userId, address.addressId)).withSelfRel()
+            address.add(addressLink)
+            val userLink = linkTo(methodOn(UserController::class.java).getUser(userId)).withRel("user")
+            address.add(userLink)
+        }
+
+        return Resources(returnValue)
     }
 
     @GetMapping(
             path = ["/{userId}/addresses/{addressId}"],
-            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, "application/hal+json"]
     )
-    fun getUserAddress(@PathVariable addressId: String): AddressRest {
+    fun getUserAddress(@PathVariable userId: String, @PathVariable addressId: String): Resource<AddressRest> {
         val addressDto = addressService.getAddressByAddressId(addressId)
 
-        return ModelMapper().map(addressDto, AddressRest::class.java)
+        val addressesRestModel = ModelMapper().map(addressDto, AddressRest::class.java)
+        val addressLink = linkTo(methodOn(UserController::class.java).getUserAddress(userId, addressId)).withSelfRel()
+        val addressesLink = linkTo(methodOn(UserController::class.java).getUserAddresses(userId)).withRel("addresses")
+        val userLink = linkTo(UserController::class.java).slash(userId).withRel("user")
+
+        addressesRestModel.add(addressLink)
+        addressesRestModel.add(userLink)
+        addressesRestModel.add(addressesLink)
+
+        return Resource(addressesRestModel)
     }
 }
