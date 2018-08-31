@@ -34,6 +34,14 @@ class Utils {
                 .compact()
     }
 
+    fun generatePasswordResetToken(userId: String): String {
+        return Jwts.builder()
+                .setSubject(userId)
+                .setExpiration(Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret())
+                .compact()
+    }
+
     fun hasTokenExpired(token: String): Boolean {
         val claims = Jwts.parser()
                 .setSigningKey(SecurityConstants.getTokenSecret())

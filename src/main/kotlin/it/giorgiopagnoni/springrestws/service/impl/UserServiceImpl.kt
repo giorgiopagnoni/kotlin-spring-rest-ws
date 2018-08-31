@@ -1,8 +1,10 @@
 package it.giorgiopagnoni.springrestws.service.impl
 
 import it.giorgiopagnoni.springrestws.exceptions.UserServiceException
+import it.giorgiopagnoni.springrestws.io.entity.PasswordResetTokenEntity
 import it.giorgiopagnoni.springrestws.io.repositories.UserRepository
 import it.giorgiopagnoni.springrestws.io.entity.UserEntity
+import it.giorgiopagnoni.springrestws.io.repositories.PasswordResetTokenRepository
 import it.giorgiopagnoni.springrestws.service.UserMailer
 import it.giorgiopagnoni.springrestws.service.UserService
 import it.giorgiopagnoni.springrestws.shared.Utils
@@ -26,6 +28,9 @@ class UserServiceImpl : UserService {
 
     @Autowired
     lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var passwordResetTokenRepository: PasswordResetTokenRepository
 
     @Autowired
     lateinit var utils: Utils
@@ -133,6 +138,21 @@ class UserServiceImpl : UserService {
         userEntity.emailVerificationToken = null
         userEntity.emailVerificationStatus = true
         userRepository.save(userEntity)
+        return true
+    }
+
+    override fun requestPasswordReset(email: String): Boolean {
+        val userEntity = userRepository.findByEmail(email)
+                ?: return false
+
+        val token = utils.generatePasswordResetToken(userEntity.userId)
+        val passwordResetTokenEntity = PasswordResetTokenEntity()
+        passwordResetTokenEntity.token = token
+        passwordResetTokenEntity.userDetails = userEntity
+        passwordResetTokenRepository.save(passwordResetTokenEntity)
+
+        userMailer.sendPasswordResetEmail(userEntity.email, token)
+
         return true
     }
 }

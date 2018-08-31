@@ -21,6 +21,8 @@ class WebSecurity(
                 ?.permitAll()
                 ?.antMatchers(HttpMethod.GET, SecurityConstants.EMAIL_VERIFICATION_URL)
                 ?.permitAll()
+                ?.antMatchers(HttpMethod.GET, SecurityConstants.PASSWORD_RESET_VERIFICATION_URL)
+                ?.permitAll()
                 ?.anyRequest()
                 ?.authenticated()
                 ?.and()

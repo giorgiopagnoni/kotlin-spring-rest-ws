@@ -4,6 +4,7 @@ import it.giorgiopagnoni.springrestws.service.AddressService
 import it.giorgiopagnoni.springrestws.service.UserService
 import it.giorgiopagnoni.springrestws.shared.dto.AddressDto
 import it.giorgiopagnoni.springrestws.shared.dto.UserDto
+import it.giorgiopagnoni.springrestws.ui.request.PasswordResetRequestModel
 import it.giorgiopagnoni.springrestws.ui.request.UserCreateRequestModel
 import it.giorgiopagnoni.springrestws.ui.request.UserUpdateRequestModel
 import it.giorgiopagnoni.springrestws.ui.response.*
@@ -156,6 +157,21 @@ class UserController {
             RequestOperationStatus.SUCCESS.name
         } else {
             RequestOperationStatus.ERROR.name
+        }
+
+        return returnValue
+    }
+
+    @PostMapping(
+            path = ["/password-reset-request"],
+            consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE],
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+    )
+    fun requestPasswordReset(@Valid @RequestBody passwordResetRequestModel: PasswordResetRequestModel): OperationStatusModel {
+
+        val returnValue = OperationStatusModel(RequestOperationName.REQUEST_PASSWORD_RESET.name, RequestOperationStatus.ERROR.name)
+        if (userService.requestPasswordReset(passwordResetRequestModel.email)) {
+            returnValue.operationResult = RequestOperationStatus.SUCCESS.name
         }
 
         return returnValue
